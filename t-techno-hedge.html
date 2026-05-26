@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Хеджирование Т-Техно — Rumberg Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; color: #1a1a2e; background: #fff; }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+    background: linear-gradient(90deg, #1a3a5c, #e8782a); border-radius: 3px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: #e8782a; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #e8782a; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); cursor: pointer;
+  }
+  input[type=number] {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 8px 12px; color: #e8782a; font-size: 18px; font-weight: 700;
+    font-family: inherit; width: 120px; text-align: center; outline: none;
+  }
+  input[type=number]:focus { border-color: #e8782a; }
+  input[type=number]::-webkit-inner-spin-button { opacity: 0.5; }
+
+  @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+  /* NAV */
+  .nav { background: #1e2235; padding: 16px 24px; display: flex; align-items: center; justify-content: center; }
+  .nav-text { display: flex; flex-direction: column; line-height: 1; text-align: center; }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 4px; }
+  .nav-sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 6px; margin-top: 2px; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 50%, #0d1b2a 100%);
+    padding: 60px 24px 50px; text-align: center; overflow: hidden;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(232,120,42,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(26,58,92,0.3) 0%, transparent 60%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .badge {
+    display: inline-block; background: rgba(232,120,42,0.2); color: #e8a44a;
+    padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 16px;
+  }
+  h1 .accent { color: #e8782a; }
+  .subtitle { color: rgba(255,255,255,0.7); font-size: 17px; line-height: 1.6; max-width: 600px; margin: 0 auto 32px; }
+  .hero-stats { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .hero-stat { text-align: center; }
+  .hero-stat-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: #e8782a; }
+  .hero-stat-label { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 4px; }
+  .hero-stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+
+  .disclaimer-bar {
+    background: #fef3c7; border-bottom: 1px solid #fde68a; padding: 12px 24px;
+    text-align: center; font-size: 13px; color: #92400e;
+  }
+
+  /* SECTIONS */
+  .section { padding: 56px 24px; max-width: 1020px; margin: 0 auto; }
+  .section--dark { background: #0d1b2a; max-width: 100%; }
+  .section--dark .section-inner { max-width: 1020px; margin: 0 auto; }
+  .section--warm { background: #f8f6f3; max-width: 100%; }
+  .section--warm .section-inner { max-width: 1020px; margin: 0 auto; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+  .section--dark h2 { color: #fff; }
+  .section-sub { text-align: center; color: #888; font-size: 15px; margin-bottom: 36px; }
+  .section--dark .section-sub { color: rgba(255,255,255,0.6); }
+
+  /* STEPS */
+  .steps-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .step-card {
+    flex: 1 1 220px; max-width: 280px; background: #f8f6f3; border-radius: 16px;
+    padding: 24px; position: relative; animation: fadeUp 0.6s ease-out both;
+  }
+  .step-card:nth-child(2) { animation-delay: 0.15s; }
+  .step-card:nth-child(3) { animation-delay: 0.3s; }
+  .step-card:nth-child(4) { animation-delay: 0.45s; }
+  .step-icon { font-size: 28px; margin-bottom: 10px; }
+  .step-num {
+    position: absolute; top: 12px; right: 16px;
+    font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: rgba(232,120,42,0.1);
+  }
+  .step-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: #666; line-height: 1.6; }
+
+  /* CALC */
+  .calc-grid { display: flex; gap: 28px; flex-wrap: wrap; max-width: 960px; margin: 0 auto; }
+  .calc-inputs {
+    flex: 1 1 380px; background: rgba(255,255,255,0.06); border-radius: 16px;
+    padding: 28px; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .calc-results {
+    flex: 1 1 380px;
+    background: linear-gradient(180deg, rgba(232,120,42,0.12) 0%, rgba(232,120,42,0.04) 100%);
+    border-radius: 16px; padding: 28px; border: 1px solid rgba(232,120,42,0.2);
+  }
+  .input-group { margin-bottom: 28px; }
+  .input-group:last-child { margin-bottom: 0; }
+  .label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600; margin-bottom: 12px;
+  }
+  .label-value { color: #e8782a; font-size: 20px; font-weight: 700; }
+  .range-labels {
+    display: flex; justify-content: space-between;
+    color: rgba(255,255,255,0.3); font-size: 11px; margin-top: 6px;
+  }
+  .term-toggle { display: flex; gap: 8px; }
+  .term-btn {
+    flex: 1; padding: 12px 8px; border-radius: 10px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+  }
+  .term-btn.active {
+    background: rgba(232,120,42,0.2); border-color: #e8782a;
+    color: #e8782a; font-weight: 700;
+  }
+
+  .result-header {
+    color: #e8782a; font-size: 16px; font-weight: 700; margin-bottom: 20px;
+    padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .result-label { color: rgba(255,255,255,0.5); font-size: 13px; }
+  .result-val { color: #fff; font-size: 15px; font-weight: 600; }
+  .result-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 8px 0; }
+  .result-highlight {
+    background: rgba(255,255,255,0.04); border-radius: 8px;
+    padding: 10px 12px; margin: 4px -12px;
+  }
+  .positive { color: #4ade80 !important; }
+  .negative { color: #f87171 !important; }
+
+  /* Compare block */
+  .compare-block {
+    max-width: 960px; margin: 32px auto 0; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+  }
+  .compare-card-sm {
+    flex: 1 1 280px; max-width: 450px; border-radius: 16px; padding: 28px;
+    text-align: center;
+  }
+  .compare-card-sm.bad { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); }
+  .compare-card-sm.good { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); }
+  .compare-card-sm .cc-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .compare-card-sm.bad .cc-label { color: #f87171; }
+  .compare-card-sm.good .cc-label { color: #4ade80; }
+  .compare-card-sm .cc-value {
+    font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; margin-bottom: 4px;
+  }
+  .compare-card-sm .cc-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { padding: 14px 16px; text-align: left; font-weight: 700; border-bottom: 2px solid #e8782a; font-size: 13px; }
+  td { padding: 12px 16px; border-bottom: 1px solid #eee; }
+  tr.even { background: #faf9f7; }
+  tr.current { background: rgba(232,120,42,0.08); }
+  .text-green { color: #16a34a; }
+  .text-red { color: #dc2626; }
+  .fw700 { font-weight: 700; }
+
+  /* PARAMS */
+  .params-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px; max-width: 800px; margin: 32px auto 0;
+  }
+  .param-item { padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e8e4df; }
+  .param-key { font-size: 11px; color: #999; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .param-val { font-size: 16px; font-weight: 700; }
+
+  /* RISKS */
+  .risks-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .risk-card {
+    flex: 1 1 260px; max-width: 300px; padding: 24px; border-radius: 12px;
+    border: 1px solid #fde68a; background: #fffbeb;
+  }
+  .risk-icon { font-size: 24px; margin-bottom: 8px; }
+  .risk-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #92400e; }
+  .risk-desc { font-size: 13px; color: #78716c; line-height: 1.6; }
+
+  .footer { background: #0d1b2a; padding: 32px 24px; }
+  .footer-inner { max-width: 700px; margin: 0 auto; }
+  .disclaimer { color: rgba(255,255,255,0.35); font-size: 12px; line-height: 1.7; text-align: center; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 36px; }
+    .hero-stat-value { font-size: 22px; }
+    .section { padding: 40px 16px; }
+    .calc-grid { gap: 16px; }
+    h2 { font-size: 24px; }
+    .compare-card-sm .cc-value { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-text">
+    <span class="nav-brand">RUMBERG</span>
+    <span class="nav-sub">CAPITAL</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="badge">ХЕДЖИРОВАНИЕ</div>
+    <h1>Защитите позицию в<br><span class="accent">Т-Техно</span></h1>
+    <p class="subtitle">Защитный варрант — страховка от падения акций. Рынок вырос — вы ничего не теряете кроме премии. Рынок упал — варрант компенсирует убыток.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value" id="heroCurrentPrice">385 ₽</div>
+        <div class="hero-stat-label">текущая цена Т-Техно</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">По рынку</div>
+        <div class="hero-stat-label">страйк — текущая цена</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">6м / 1г</div>
+        <div class="hero-stat-label">срок на выбор</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">✓</div>
+        <div class="hero-stat-label">без автозакрытия позиции</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer-bar">
+  ⚠️ Все расчёты носят индикативный характер и не являются офертой. Продукты доступны только квалифицированным инвесторам.
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:#f8f6f3; max-width:100%;">
+  <div style="max-width:1020px; margin:0 auto;">
+    <h2>Как работает защитный варрант</h2>
+    <div class="steps-grid">
+      <div class="step-card" style="background:#fff;">
+        <div class="step-icon">🛡️</div><div class="step-num">01</div>
+        <div class="step-title">Покупаете защиту</div>
+        <p class="step-desc">Платите премию — это максимум, что вы можете потерять на варранте</p>
+      </div>
+      <div class="step-card" style="background:#fff;">
+        <div class="step-icon">📉</div><div class="step-num">02</div>
+        <div class="step-title">Акция падает</div>
+        <p class="step-desc">Цена Т-Техно снижается — ваш портфель теряет в стоимости</p>
+      </div>
+      <div class="step-card" style="background:#fff;">
+        <div class="step-icon">💰</div><div class="step-num">03</div>
+        <div class="step-title">Варрант компенсирует</div>
+        <p class="step-desc">Put-варрант приносит доход, пропорциональный падению акции</p>
+      </div>
+      <div class="step-card" style="background:#fff;">
+        <div class="step-icon">📈</div><div class="step-num">04</div>
+        <div class="step-title">Акция растёт?</div>
+        <p class="step-desc">Варрант не исполняется — вы теряете только премию, портфель в плюсе</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="section--dark">
+  <div class="section-inner" style="padding:56px 24px;">
+    <h2>Калькулятор хеджирования</h2>
+    <p class="section-sub">Смоделируйте сценарий падения и оцените эффект защиты</p>
+
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <!-- Term -->
+        <div class="input-group">
+          <div class="label">Срок варранта</div>
+          <div class="term-toggle">
+            <button class="term-btn active" id="term6m" onclick="setTerm(0.5)">6 месяцев — 10.85%</button>
+            <button class="term-btn" id="term1y" onclick="setTerm(1)">1 год — 12.7%</button>
+          </div>
+        </div>
+
+        <!-- Current price -->
+        <div class="input-group">
+          <div class="label">
+            <span>Текущая цена Т-Техно</span>
+            <span><input type="number" id="currentPriceInput" value="385" min="100" max="1000" step="1" oninput="recalc()"> <span style="color:rgba(255,255,255,0.4)">₽</span></span>
+          </div>
+        </div>
+
+        <!-- Notional of warrant = hedge volume -->
+        <div class="input-group">
+          <div class="label">
+            <span>Объём хеджирования (номинал варранта)</span>
+            <span class="label-value" id="notionalDisplay">350 000 000 ₽</span>
+          </div>
+          <input type="range" id="notionalSlider" min="10000000" max="500000000" step="5000000" value="350000000" oninput="recalc()">
+          <div class="range-labels"><span>10 млн</span><span>500 млн</span></div>
+          <div style="margin-top:8px; font-size:13px; color:rgba(255,255,255,0.4);">
+            Премия (стоимость варранта): <span id="premiumDisplay" style="color:#e8782a; font-weight:700;">—</span>
+          </div>
+        </div>
+
+        <!-- Position size -->
+        <div class="input-group">
+          <div class="label">
+            <span>Позиция в Т-Техно</span>
+            <span class="label-value" id="positionDisplay">350 000 000 ₽</span>
+          </div>
+          <input type="range" id="positionSlider" min="10000000" max="500000000" step="5000000" value="350000000" oninput="recalc()">
+          <div class="range-labels"><span>10 млн</span><span>500 млн</span></div>
+        </div>
+
+        <!-- Future price -->
+        <div class="input-group">
+          <div class="label">
+            <span>Цена Т-Техно в будущем</span>
+            <span class="label-value" id="futurePriceDisplay">300 ₽</span>
+          </div>
+          <input type="range" id="futurePriceSlider" min="200" max="400" step="1" value="300" oninput="recalc()" style="direction:rtl">
+          <div class="range-labels"><span>400 ₽</span><span>300 ₽</span><span>200 ₽</span></div>
+        </div>
+      </div>
+
+      <div class="calc-results">
+        <div class="result-header">Результат хеджирования</div>
+
+        <div class="result-row">
+          <span class="result-label">Номинал варранта</span>
+          <span class="result-val" id="resNotional">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Премия (стоимость защиты)</span>
+          <span class="result-val" id="resPremium" style="color:#f87171">—</span>
+        </div>
+        <div class="result-divider"></div>
+
+        <div class="result-row">
+          <span class="result-label">① Цена Т-Техно сейчас</span>
+          <span class="result-val" id="res1">385 ₽</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">② Цена Т-Техно в будущем</span>
+          <span class="result-val" id="res2">300 ₽</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">③ Динамика Т-Техно</span>
+          <span class="result-val" id="res3">—</span>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-row">
+          <span class="result-label">④ Доходность варранта</span>
+          <span class="result-val" id="res4" style="font-size:17px">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">⑤ Доход варранта (абс.)</span>
+          <span class="result-val" id="res5" style="font-size:17px">—</span>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-row result-highlight">
+          <span class="result-label">⑥ Портфель БЕЗ варранта</span>
+          <span class="result-val" id="res6" style="font-size:20px; font-weight:700">—</span>
+        </div>
+        <div class="result-row result-highlight" style="margin-top:8px">
+          <span class="result-label">⑦ Портфель С варрантом</span>
+          <span class="result-val" id="res7" style="font-size:20px; font-weight:700">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compare cards -->
+    <div class="compare-block" id="compareBlock"></div>
+
+    <!-- CHART -->
+    <div style="max-width:900px; margin:48px auto 0;">
+      <h2 style="color:#fff; margin-bottom:24px;">Наглядное сравнение</h2>
+      <div style="background:rgba(255,255,255,0.04); border-radius:16px; padding:24px; border:1px solid rgba(255,255,255,0.08); position:relative; height:400px;">
+        <canvas id="hedgeChart"></canvas>
+      </div>
+      <div style="display:flex; justify-content:center; gap:24px; margin-top:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:32px; height:4px; background:#f87171; border-radius:2px;"></div>
+          <span style="color:rgba(255,255,255,0.5); font-size:13px;">Без хеджирования</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:32px; height:4px; background:#4ade80; border-radius:2px;"></div>
+          <span style="color:rgba(255,255,255,0.5); font-size:13px;">С хеджированием</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:12px; height:12px; background:rgba(232,120,42,0.6); border-radius:50%;"></div>
+          <span style="color:rgba(255,255,255,0.5); font-size:13px;">Выбранная цена</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:32px; height:12px; background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); border-radius:2px;"></div>
+          <span style="color:rgba(255,255,255,0.5); font-size:13px;">Экономия за счёт хеджа</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<!-- SCENARIOS TABLE -->
+<section class="section">
+  <h2>Таблица сценариев</h2>
+  <p class="section-sub" id="tableSubtitle">—</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Цена Т-Техно</th>
+          <th>Динамика</th>
+          <th>Доход варранта</th>
+          <th>Портфель без хеджа</th>
+          <th>Эффект хеджирования</th>
+        </tr>
+      </thead>
+      <tbody id="scenarioBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PARAMS -->
+<section class="section--warm">
+  <div class="section-inner" style="padding:56px 24px;">
+    <h2>Параметры продукта</h2>
+    <div class="params-grid" id="paramsGrid"></div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section class="section">
+  <h2>Риски</h2>
+  <div class="risks-grid">
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Акция не упадёт</div>
+      <p class="risk-desc">Если цена Т-Техно останется на месте или вырастет, варрант не исполнится — вы потеряете уплаченную премию</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Частичное покрытие</div>
+      <p class="risk-desc">Если объём варранта меньше позиции в акциях, хедж покроет убыток лишь частично</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-icon">⚠️</div>
+      <div class="risk-title">Премия не возвращается</div>
+      <p class="risk-desc">Уплаченная премия — это стоимость страховки. Она не возвращается вне зависимости от исхода</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="disclaimer">
+      Все представленные расчёты носят исключительно индикативный характер и не являются офертой или инвестиционной рекомендацией.
+      Данные продукты доступны только квалифицированным инвесторам в соответствии с законодательством РФ.
+      Прошлые результаты не гарантируют будущую доходность. Инвестирование связано с рисками потери капитала.
+    </p>
+  </div>
+</footer>
+
+<script>
+// ─── CONSTANTS ───
+const PREMIUM_6M = 10.85; // % of notional
+const PREMIUM_1Y = 12.7;  // % of notional
+
+// ─── STATE ───
+let term = 0.5; // years
+let premium = PREMIUM_6M;
+
+function fmt(n) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)); }
+function fmtM(n) {
+  if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(1) + ' млрд';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(1) + ' млн';
+  return fmt(n);
+}
+
+// ─── TERM SWITCH ───
+function setTerm(t) {
+  term = t;
+  premium = t === 0.5 ? PREMIUM_6M : PREMIUM_1Y;
+  document.getElementById('term6m').classList.toggle('active', t === 0.5);
+  document.getElementById('term1y').classList.toggle('active', t === 1);
+  recalc();
+}
+
+// ─── PUT WARRANT PAYOFF ───
+// Notional = объём хеджирования (slider)
+// Premium (cost) = notional × RO%
+// Payoff = notional × max(0, 1 - P_fin/P_init)
+// Net P&L = payoff - premium
+// При номинале = позиции → хедж 1:1
+
+function calcPut(currentPrice, futurePrice, notional) {
+  var ro = premium / 100;
+  var cost = notional * ro;
+  var priceDynamic = (futurePrice / currentPrice) - 1;
+  var putPayoff = notional * Math.max(0, 1 - futurePrice / currentPrice);
+  var netPnl = putPayoff - cost;
+  var putReturn = cost > 0 ? (putPayoff - cost) / cost : 0;
+  return {
+    notional: notional,
+    cost: cost,
+    priceDynamic: priceDynamic,
+    putPayoff: putPayoff,
+    netPnl: netPnl,
+    putReturn: putReturn,
+  };
+}
+
+// ─── RECALC ───
+function recalc() {
+  var currentPrice = parseFloat(document.getElementById('currentPriceInput').value) || 385;
+  var futurePrice = parseFloat(document.getElementById('futurePriceSlider').value);
+  var notional = parseFloat(document.getElementById('notionalSlider').value);
+  var positionSize = parseFloat(document.getElementById('positionSlider').value);
+
+  var r = calcPut(currentPrice, futurePrice, notional);
+
+  // Displays
+  document.getElementById('notionalDisplay').textContent = fmt(notional) + ' ₽';
+  document.getElementById('premiumDisplay').textContent = fmt(r.cost) + ' ₽ (' + premium + '%)';
+  document.getElementById('positionDisplay').textContent = fmt(positionSize) + ' ₽';
+  document.getElementById('futurePriceDisplay').textContent = futurePrice + ' ₽';
+  document.getElementById('heroCurrentPrice').textContent = currentPrice + ' ₽';
+
+  // Notional & premium
+  document.getElementById('resNotional').textContent = fmtM(r.notional) + ' ₽';
+  document.getElementById('resPremium').textContent = '−' + fmtM(r.cost) + ' ₽';
+
+  // ① Current price
+  document.getElementById('res1').textContent = currentPrice + ' ₽';
+  // ② Future price
+  document.getElementById('res2').textContent = futurePrice + ' ₽';
+  // ③ Dynamic
+  var dynPct = r.priceDynamic * 100;
+  var el3 = document.getElementById('res3');
+  el3.textContent = (dynPct > 0 ? '+' : '') + dynPct.toFixed(1) + '%';
+  el3.className = 'result-val ' + (dynPct >= 0 ? 'positive' : 'negative');
+
+  // ④ Warrant return
+  var el4 = document.getElementById('res4');
+  var wRet = r.putReturn * 100;
+  el4.textContent = (wRet > 0 ? '+' : '') + wRet.toFixed(1) + '%';
+  el4.className = 'result-val ' + (wRet >= 0 ? 'positive' : 'negative');
+  el4.style.fontSize = '17px';
+
+  // ⑤ Warrant PnL absolute
+  var el5 = document.getElementById('res5');
+  el5.textContent = (r.netPnl >= 0 ? '+' : '') + fmt(r.netPnl) + ' ₽';
+  el5.className = 'result-val ' + (r.netPnl >= 0 ? 'positive' : 'negative');
+  el5.style.fontSize = '17px';
+
+  // ⑥ Portfolio WITHOUT warrant
+  var portfolioChangeNoHedge = positionSize * r.priceDynamic;
+  var el6 = document.getElementById('res6');
+  el6.textContent = (portfolioChangeNoHedge >= 0 ? '+' : '') + fmt(portfolioChangeNoHedge) + ' ₽';
+  el6.className = 'result-val ' + (portfolioChangeNoHedge >= 0 ? 'positive' : 'negative');
+  el6.style.cssText = 'font-size:20px;font-weight:700';
+
+  // ⑦ Portfolio WITH warrant (stock change + warrant payoff - premium)
+  var portfolioChangeWithHedge = portfolioChangeNoHedge + r.netPnl;
+  var el7 = document.getElementById('res7');
+  el7.textContent = (portfolioChangeWithHedge >= 0 ? '+' : '') + fmt(portfolioChangeWithHedge) + ' ₽';
+  el7.className = 'result-val ' + (portfolioChangeWithHedge >= 0 ? 'positive' : 'negative');
+  el7.style.cssText = 'font-size:20px;font-weight:700';
+
+  // Compare cards
+  var cb = document.getElementById('compareBlock');
+  var diff = portfolioChangeWithHedge - portfolioChangeNoHedge;
+  cb.innerHTML =
+    '<div class="compare-card-sm bad">' +
+      '<div class="cc-label">Без хеджирования</div>' +
+      '<div class="cc-value" style="color:' + (portfolioChangeNoHedge >= 0 ? '#4ade80' : '#f87171') + '">' +
+        (portfolioChangeNoHedge >= 0 ? '+' : '') + fmtM(portfolioChangeNoHedge) + ' ₽</div>' +
+      '<div class="cc-sub">изменение портфеля</div>' +
+    '</div>' +
+    '<div class="compare-card-sm good">' +
+      '<div class="cc-label">Эффект хеджирования</div>' +
+      '<div class="cc-value" style="color:' + (diff >= 0 ? '#4ade80' : '#f87171') + '">' +
+        (diff >= 0 ? '+' : '') + fmtM(diff) + ' ₽</div>' +
+      '<div class="cc-sub">экономия на падении' + (portfolioChangeWithHedge < 0 ? ', итого портфель: ' + fmtM(portfolioChangeWithHedge) + ' ₽' : '') + '</div>' +
+    '</div>';
+
+  buildScenarios(currentPrice, notional, positionSize);
+  buildParams(currentPrice, notional);
+  buildChart(currentPrice, notional, positionSize, futurePrice);
+}
+
+function updateTermButtons() {
+  document.getElementById('term6m').textContent = '6 месяцев — ' + PREMIUM_6M + '%';
+  document.getElementById('term1y').textContent = '1 год — ' + PREMIUM_1Y + '%';
+}
+
+// ─── SCENARIOS ───
+function buildScenarios(currentPrice, notional, positionSize) {
+  var prices = [];
+  for (var p = 400; p >= 200; p -= 25) prices.push(p);
+  if (prices.indexOf(currentPrice) === -1) prices.push(currentPrice);
+  prices.sort(function(a, b) { return b - a; });
+
+  var tbody = document.getElementById('scenarioBody');
+  tbody.innerHTML = '';
+
+  prices.forEach(function(fp, i) {
+    var r = calcPut(currentPrice, fp, notional);
+    var portNo = positionSize * r.priceDynamic;
+    var saving = r.netPnl;
+    var dynPct = r.priceDynamic * 100;
+
+    var tr = document.createElement('tr');
+    if (fp === currentPrice) tr.className = 'current';
+    else if (i % 2 === 0) tr.className = 'even';
+
+    var label = fp === currentPrice ? ' (сейчас)' : '';
+
+    tr.innerHTML =
+      '<td>' + fp + ' ₽' + label + '</td>' +
+      '<td class="' + (dynPct >= 0 ? 'text-green' : 'text-red') + '">' +
+        (dynPct > 0 ? '+' : '') + dynPct.toFixed(1) + '%</td>' +
+      '<td class="fw700 ' + (r.netPnl >= 0 ? 'text-green' : 'text-red') + '">' +
+        (r.netPnl >= 0 ? '+' : '') + fmtM(r.netPnl) + ' ₽</td>' +
+      '<td class="' + (portNo >= 0 ? 'text-green' : 'text-red') + '">' +
+        (portNo >= 0 ? '+' : '') + fmtM(portNo) + ' ₽</td>' +
+      '<td class="fw700 ' + (saving >= 0 ? 'text-green' : 'text-red') + '">' +
+        (saving >= 0 ? '+' : '') + fmtM(saving) + ' ₽</td>';
+    tbody.appendChild(tr);
+  });
+
+  var termLabel = term === 0.5 ? '6 мес' : '1 год';
+  document.getElementById('tableSubtitle').textContent =
+    'Срок ' + termLabel + ', премия ' + premium + '%, позиция ' + fmtM(positionSize) + ' ₽';
+}
+
+// ─── PARAMS ───
+function buildParams(currentPrice, notional) {
+  var ro = premium / 100;
+  var cost = notional * ro;
+  var termLabel = term === 0.5 ? '6 месяцев' : '1 год';
+  var params = [
+    ['Базовый актив', 'Акции Т-Техно'],
+    ['Тип', 'Защитный варрант (страйк по рынку)'],
+    ['Срок', termLabel],
+    ['Премия', premium + '% от номинала'],
+    ['Номинал варранта', fmtM(notional) + ' ₽'],
+    ['Стоимость (премия)', fmtM(cost) + ' ₽'],
+    ['Текущая цена', currentPrice + ' ₽'],
+    ['Выплата', '100% от падения цены акции'],
+    ['Досрочная терминация', 'Отсутствует'],
+  ];
+  var grid = document.getElementById('paramsGrid');
+  grid.innerHTML = '';
+  params.forEach(function(p) {
+    var d = document.createElement('div');
+    d.className = 'param-item';
+    d.innerHTML = '<div class="param-key">' + p[0] + '</div><div class="param-val">' + p[1] + '</div>';
+    grid.appendChild(d);
+  });
+}
+
+// ─── CHART ───
+var hedgeChart = null;
+
+function buildChart(currentPrice, notional, positionSize, selectedFuturePrice) {
+  var prices = [];
+  for (var p = 200; p <= 400; p += 5) prices.push(p);
+
+  var dataNoHedge = [];
+  var dataWithHedge = [];
+  var labels = [];
+
+  prices.forEach(function(fp) {
+    var r = calcPut(currentPrice, fp, notional);
+    var portNo = positionSize * r.priceDynamic;
+    var portYes = portNo + r.netPnl;
+    labels.push(fp);
+    dataNoHedge.push(portNo / 1e6);
+    dataWithHedge.push(portYes / 1e6);
+  });
+
+  // Find selected price index for point highlight
+  var selectedIdx = -1;
+  var minDist = 999;
+  labels.forEach(function(l, i) {
+    var d = Math.abs(l - selectedFuturePrice);
+    if (d < minDist) { minDist = d; selectedIdx = i; }
+  });
+
+  var pointRadiusNo = labels.map(function(_, i) { return i === selectedIdx ? 8 : 0; });
+  var pointRadiusYes = labels.map(function(_, i) { return i === selectedIdx ? 8 : 0; });
+
+  if (hedgeChart) {
+    hedgeChart.data.labels = labels;
+    hedgeChart.data.datasets[0].data = dataNoHedge;
+    hedgeChart.data.datasets[0].pointRadius = pointRadiusNo;
+    hedgeChart.data.datasets[1].data = dataWithHedge;
+    hedgeChart.data.datasets[1].pointRadius = pointRadiusYes;
+    hedgeChart.update('none');
+    return;
+  }
+
+  var ctx = document.getElementById('hedgeChart').getContext('2d');
+  hedgeChart = new Chart(ctx, {
+    type: 'line',
+    plugins: [{
+      id: 'savingsArea',
+      beforeDatasetsDraw: function(chart) {
+        var meta0 = chart.getDatasetMeta(0); // no hedge
+        var meta1 = chart.getDatasetMeta(1); // with hedge
+        if (!meta0.data.length || !meta1.data.length) return;
+        var ctx2 = chart.ctx;
+        ctx2.save();
+        ctx2.beginPath();
+        // Forward along with-hedge line
+        for (var i = 0; i < meta1.data.length; i++) {
+          var pt = meta1.data[i];
+          if (i === 0) ctx2.moveTo(pt.x, pt.y);
+          else ctx2.lineTo(pt.x, pt.y);
+        }
+        // Backward along no-hedge line
+        for (var j = meta0.data.length - 1; j >= 0; j--) {
+          var pt2 = meta0.data[j];
+          ctx2.lineTo(pt2.x, pt2.y);
+        }
+        ctx2.closePath();
+        ctx2.fillStyle = 'rgba(74,222,128,0.08)';
+        ctx2.fill();
+        ctx2.restore();
+      },
+      afterDraw: function(chart) {
+        if (chart.tooltip && chart.tooltip._active && chart.tooltip._active.length) {
+          var activePoint = chart.tooltip._active[0];
+          var x = activePoint.element.x;
+          var yAxis = chart.scales.y;
+          var ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([4, 4]);
+          ctx2.strokeStyle = 'rgba(232,120,42,0.4)';
+          ctx2.lineWidth = 1;
+          ctx2.moveTo(x, yAxis.top);
+          ctx2.lineTo(x, yAxis.bottom);
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      }
+    }],
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Без хеджирования',
+          data: dataNoHedge,
+          borderColor: '#f87171',
+          backgroundColor: 'rgba(248,113,113,0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,
+          pointRadius: pointRadiusNo,
+          pointBackgroundColor: '#e8782a',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+        },
+        {
+          label: 'С хеджированием',
+          data: dataWithHedge,
+          borderColor: '#4ade80',
+          backgroundColor: 'rgba(74,222,128,0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.3,
+          pointRadius: pointRadiusYes,
+          pointBackgroundColor: '#e8782a',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(13,27,42,0.95)',
+          titleColor: '#e8782a',
+          bodyColor: '#fff',
+          borderColor: 'rgba(232,120,42,0.3)',
+          borderWidth: 1,
+          padding: 16,
+          bodySpacing: 8,
+          callbacks: {
+            title: function(items) { return 'Цена Т-Техно: ' + items[0].label + ' ₽'; },
+            label: function(item) {
+              var val = item.raw;
+              var sign = val >= 0 ? '+' : '';
+              return item.dataset.label + ': ' + sign + val.toFixed(1) + ' млн ₽';
+            },
+            afterBody: function(items) {
+              return [''];
+            },
+            footer: function(items) {
+              if (items.length >= 2) {
+                var noHedge = items[0].raw;
+                var withHedge = items[1].raw;
+                var saving = withHedge - noHedge;
+                var sign = saving >= 0 ? '+' : '';
+                return '💰 ЭКОНОМИЯ: ' + sign + saving.toFixed(1) + ' млн ₽';
+              }
+              return '';
+            }
+          },
+          footerColor: '#e8782a',
+          footerFont: { weight: 'bold', size: 15 },
+          footerMarginTop: 8
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Цена Т-Техно, ₽', color: 'rgba(255,255,255,0.4)', font: { size: 13 } },
+          ticks: {
+            color: 'rgba(255,255,255,0.4)',
+            callback: function(val, idx) { return idx % 4 === 0 ? labels[idx] : ''; }
+          },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y: {
+          title: { display: true, text: 'Результат, млн ₽', color: 'rgba(255,255,255,0.4)', font: { size: 13 } },
+          ticks: {
+            color: 'rgba(255,255,255,0.4)',
+            callback: function(val) { return (val >= 0 ? '+' : '') + val.toFixed(0); }
+          },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        }
+      }
+    }
+  });
+}
+
+// ─── INIT ───
+updateTermButtons();
+recalc();
+</script>
+</body>
+</html>
